@@ -3,35 +3,41 @@ from discord.ext import commands
 import json
 from decouple import config
 
+
 def get_prefix(client, message):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
     return prefixes[str(message.guild.id)]
 
+
 client = commands.Bot(command_prefix=get_prefix)
 token = config('DISCORD_BOT_TOKEN')
 client.remove_command("help")
+
 
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     await client.change_presence(activity=discord.Game("Turbo Octo ! Manage Roles"))
 
+
 @client.event
 async def on_guild_join(guild):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
+    prefixes[str(guild.id)] = '-o '
 
     with open('channels.json', 'r') as f:
         channels = json.load(f)
-        
+
     prefixes[str(guild.id)] = '-o '
     channels[str(guild.id)] = {}
-    
+
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
     with open('channels.json', 'w') as f:
         json.dump(channels, f, indent=4)
+
 
 @client.event
 async def on_guild_remove(guild):
@@ -42,25 +48,25 @@ async def on_guild_remove(guild):
         channels = json.load(f)
 
     prefixes.pop(str(guild.id))
-    channels.pop(str(guild.id))
-    
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
     with open('channels.json', 'w') as f:
         json.dump(channels, f, indent=4)
+
 
 @client.command()
 @commands.has_permissions(administrator=True)
 async def changeprefix(ctx, prefix):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
-    
+
     prefixes[str(ctx.guild.id)] = prefix + ""
-    
+
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
-        
-    embedVar = discord.Embed(title=f"Successfully changed prefix to {prefix}", color=0x61aaf1)
+
+    embedVar = discord.Embed(
+        title=f"Successfully changed prefix to {prefix}", color=0x61aaf1)
     await ctx.send(embed=embedVar)
 
 private_rooms = {}
@@ -89,7 +95,7 @@ async def on_voice_state_update(member, before, after):
 async def addroom(ctx, channel):
     with open('channels.json', 'r') as f:
         channels = json.load(f)
-        
+
     guild = ctx.guild.id
     if channel not in channels[str(guild)]:
         channels[str(guild)] += [channel]
@@ -100,10 +106,22 @@ async def addroom(ctx, channel):
     embedVar = discord.Embed(title=f"Successfully added the channel {channel} to user's custom channel maker", color=0x61aaf1)
     await ctx.send(embed=embedVar)
 
+
 @client.command()
 async def help(ctx):
-    await ctx.send("Hello !!")
+    embed = discord.Embed(title="Help", color=0x61aaf1)
+    embed.add_field(name="Change prefix",
+                    value="changeprefix [prefix] to change prefix bot", inline=False)
+    embed.add_field(
+        name="----------------------------------------------------------------------------------------", value="", inline=False)
+    embed.add_field(name="Private rooms", value="Private rooms", inline=True)
+    embed.add_field(
+        name="----------------------------------------------------------------------------------------", value="", inline=True)
+    embed.add_field(name="qzd", value="qzd", inline=True)
+    embed.set_footer(text="1/4")
+    await ctx.send(embed=embed)
 
 client.run(token)
 client.add_command(changeprefix)
+client.add_command(help)
 client.add_command(addroom)
