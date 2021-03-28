@@ -3,6 +3,7 @@ from discord import emoji
 from discord.ext import commands
 import json
 from decouple import config
+import asyncio
 
 
 def get_prefix(client, message):
@@ -91,6 +92,7 @@ async def on_voice_state_update(member, before, after):
                 private_rooms[member.id] = channel
 
 
+
 @client.command()
 @commands.has_permissions(administrator=True)
 async def addroom(ctx, channel):
@@ -109,20 +111,50 @@ async def addroom(ctx, channel):
 
 
 @client.command()
-async def help(ctx):
-    embed = discord.Embed(title="Help", color=0x61aaf1)
-    embed.add_field(name="Change prefix",
-                    value="changeprefix [prefix]  ││  Change prefix bot", inline=False)
-    embed.add_field(name="Private rooms",
-                    value="addroom [id_channel]  ││  Create private room", inline=False)
-    embed.add_field(name="qzd", value="qzd", inline=False)
-    embed.set_footer(
-        text="Page 1/4", icon_url="https://cdn.discordapp.com/avatars/825696493037944882/db7f3d6bbe165222fc75b50402fcfdec.webp")
-    final_message = await ctx.send(embed=embed)
-    await final_message.add_reaction('◀')
-    await final_message.add_reaction('▶')
-    
-    
+async def pages(ctx):
+
+    pages = 3
+    cur_page = 1
+    message = await ctx.send(embed=)
+
+    await message.add_reaction("◀️")
+    await message.add_reaction("▶️")
+
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️"]
+
+    while True:
+        try:
+            reaction, user = await client.wait_for("reaction_add", timeout=60, check=check)
+
+            if str(reaction.emoji) == "▶️":
+                cur_page += 1
+            
+            if str(reaction.emoji) == "◀️":
+                cur_page -= 1
+
+            if cur_page > pages:
+                await message.remove_reaction(reaction, user)
+                cur_page -= 1
+            elif cur_page < 1:
+                await message.remove_reaction(reaction, user)
+                cur_page += 1
+
+            if cur_page == 1:
+                await message.edit(content="test")
+                await message.remove_reaction(reaction, user)
+            elif cur_page == 2:
+                await message.edit(content="test 2 page 2")
+                await message.remove_reaction(reaction, user)
+            elif cur_page == 3:
+                await message.edit(content="test 3 page 3")
+                await message.remove_reaction(reaction, user)
+
+        except asyncio.TimeoutError:
+            await message.delete()
+            break
+
+
 
 client.run(token)
 client.add_command(changeprefix)
