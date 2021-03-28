@@ -1,4 +1,5 @@
 import discord
+from discord import emoji
 from discord.ext import commands
 import json
 from decouple import config
@@ -111,15 +112,15 @@ async def addroom(ctx, channel):
 async def help(ctx):
     embed = discord.Embed(title="Help", color=0x61aaf1)
     embed.add_field(name="Change prefix",
-                    value="changeprefix [prefix] to change prefix bot", inline=False)
-    embed.add_field(
-        name="----------------------------------------------------------------------------------------", value="", inline=False)
-    embed.add_field(name="Private rooms", value="Private rooms", inline=True)
-    embed.add_field(
-        name="----------------------------------------------------------------------------------------", value=str('    '), inline=True)
-    embed.add_field(name="qzd", value="qzd", inline=True)
-    embed.set_footer(text="1/4")
+                    value="changeprefix [prefix]  ││  Change prefix bot", inline=False)
+    embed.add_field(name="Private rooms",
+                    value="addroom [id_channel]  ││  Create private room", inline=False)
+    embed.add_field(name="qzd", value="qzd", inline=False)
+    embed.set_footer(
+        text="Page 1/4", icon_url="https://cdn.discordapp.com/avatars/825696493037944882/db7f3d6bbe165222fc75b50402fcfdec.webp")
     await ctx.send(embed=embed)
+    await ctx.message.add_reaction(':rl:')
+    
 
 client.run(token)
 client.add_command(changeprefix)
