@@ -1,5 +1,6 @@
 import discord
 from discord import emoji
+from discord.embeds import Embed
 from discord.ext import commands
 import json
 from decouple import config
@@ -110,12 +111,11 @@ async def addroom(ctx, channel):
     await ctx.send(embed=embedVar)
 
 
-@client.command()
-async def pages(ctx):
+async def help_0(ctx, cure_page):
 
     pages = 3
-    cur_page = 1
-    message = await ctx.send(embed=help_1())
+    cur_page = cure_page
+    message = await ctx.send(embed=page1())
 
     await message.add_reaction("◀️")
     await message.add_reaction("▶️")
@@ -141,10 +141,10 @@ async def pages(ctx):
                 cur_page += 1
 
             if cur_page == 1:
-                await message.edit(embed=help_1())
+                await message.edit(embed=page1())
                 await message.remove_reaction(reaction, user)
             elif cur_page == 2:
-                await message.edit(embed=help_2())
+                await message.edit(embed=page2())
                 await message.remove_reaction(reaction, user)
             elif cur_page == 3:
                 await message.edit(content="test 3 page 3")
@@ -154,7 +154,7 @@ async def pages(ctx):
             await message.delete()
             break
 
-def help_1():
+def page1():
     page1 = discord.Embed(title="Rooms", color=0x61aaf1)
     page1.add_field(name="Create rooms", value="addroom [id_channel]  ││  Create private room", inline=False)
     page1.add_field(name="Delete rooms", value="delroom [id_channel]  ││  Delete private room", inline=False)
@@ -163,13 +163,22 @@ def help_1():
     page1.set_footer(text="Page 1/4", icon_url="https://cdn.discordapp.com/avatars/825696493037944882/db7f3d6bbe165222fc75b50402fcfdec.webp")
     return page1
 
-def help_2():
+def page2():
     page2 = discord.Embed(title="Commands", color=0x61aaf1)
     page2.add_field(name="Change prefix", value="changeprefix [prefix]  ││  Change prefix bot", inline=False)
     page2.set_footer(text="Page 2/4", icon_url="https://cdn.discordapp.com/avatars/825696493037944882/db7f3d6bbe165222fc75b50402fcfdec.webp")
     return page2
 
+@client.command()
+async def help(ctx, page=None):
+    if page == None:
+        await help_0(ctx=ctx, cure_page=1)
+    if page == 2:
+        await help_0(ctx=ctx, cure_page=2)
+
+
 client.run(token)
 client.add_command(changeprefix)
 client.add_command(help)
 client.add_command(addroom)
+
