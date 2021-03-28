@@ -116,7 +116,7 @@ async def help(ctx):
         name="----------------------------------------------------------------------------------------", value="", inline=False)
     embed.add_field(name="Private rooms", value="Private rooms", inline=True)
     embed.add_field(
-        name="----------------------------------------------------------------------------------------", value="", inline=True)
+        name="----------------------------------------------------------------------------------------", value=str('    '), inline=True)
     embed.add_field(name="qzd", value="qzd", inline=True)
     embed.set_footer(text="1/4")
     await ctx.send(embed=embed)
