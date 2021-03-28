@@ -118,8 +118,10 @@ async def help(ctx):
     embed.add_field(name="qzd", value="qzd", inline=False)
     embed.set_footer(
         text="Page 1/4", icon_url="https://cdn.discordapp.com/avatars/825696493037944882/db7f3d6bbe165222fc75b50402fcfdec.webp")
-    await ctx.send(embed=embed)
-    await ctx.message.add_reaction(':rl:')
+    final_message = await ctx.send(embed=embed)
+    await final_message.add_reaction('◀')
+    await final_message.add_reaction('▶')
+    
     
 
 client.run(token)
