@@ -115,7 +115,7 @@ async def pages(ctx):
 
     pages = 3
     cur_page = 1
-    message = await ctx.send(embed=)
+    message = await ctx.send(embed=help_1())
 
     await message.add_reaction("◀️")
     await message.add_reaction("▶️")
@@ -141,10 +141,10 @@ async def pages(ctx):
                 cur_page += 1
 
             if cur_page == 1:
-                await message.edit(content="test")
+                await message.edit(embed=help_1())
                 await message.remove_reaction(reaction, user)
             elif cur_page == 2:
-                await message.edit(content="test 2 page 2")
+                await message.edit(embed=help_2())
                 await message.remove_reaction(reaction, user)
             elif cur_page == 3:
                 await message.edit(content="test 3 page 3")
@@ -154,7 +154,20 @@ async def pages(ctx):
             await message.delete()
             break
 
+def help_1():
+    page1 = discord.Embed(title="Rooms", color=0x61aaf1)
+    page1.add_field(name="Create rooms", value="addroom [id_channel]  ││  Create private room", inline=False)
+    page1.add_field(name="Delete rooms", value="delroom [id_channel]  ││  Delete private room", inline=False)
+    page1.add_field(name="Rooms names", value="nameroom [id_channel] [name]  ││  Rename private room", inline=False)
+    page1.add_field(name="Private room", value="privroom [id_channel] [yes/no]  ││  Enable or disable private room", inline=False)
+    page1.set_footer(text="Page 1/4", icon_url="https://cdn.discordapp.com/avatars/825696493037944882/db7f3d6bbe165222fc75b50402fcfdec.webp")
+    return page1
 
+def help_2():
+    page2 = discord.Embed(title="Commands", color=0x61aaf1)
+    page2.add_field(name="Change prefix", value="changeprefix [prefix]  ││  Change prefix bot", inline=False)
+    page2.set_footer(text="Page 2/4", icon_url="https://cdn.discordapp.com/avatars/825696493037944882/db7f3d6bbe165222fc75b50402fcfdec.webp")
+    return page2
 
 client.run(token)
 client.add_command(changeprefix)
