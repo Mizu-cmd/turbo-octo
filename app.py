@@ -70,6 +70,26 @@ async def changeprefix(ctx, prefix):
         title=f"Successfully changed prefix to {prefix}", color=0x61aaf1)
     await ctx.send(embed=embedVar)
 
+private_rooms = {}
+
+@client.event
+async def on_voice_state_update(member, before, after):
+    if member.id in private_rooms:
+        await private_rooms[member.id].delete()
+        private_rooms.pop(member.id)
+
+    if after.channel is not None:
+        with open('channels.json', 'r') as f:
+            channels = json.load(f)
+            if str(after.channel.id) in channels[str(member.guild.id)]:
+                overwrites = {
+                    member.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                    member.guild.me: discord.PermissionOverwrite(read_messages=True)
+                }
+                channel = await member.guild.create_voice_channel(member.name + " 's channel", overwrites=overwrites, user_limit=after.channel.user_limit)
+                await member.move_to(channel)
+                private_rooms[member.id] = channel
+
 
 @client.command()
 @commands.has_permissions(administrator=True)
@@ -79,13 +99,12 @@ async def addroom(ctx, channel):
 
     guild = ctx.guild.id
     if channel not in channels[str(guild)]:
-        channels[str(guild)] += channels
+        channels[str(guild)] += [channel]
+    
+        with open("channels.json", "w") as file:
+            json.dump(channels, file, indent=4)
 
-    with open("channels.json", "w") as file:
-        json.dump(channels, file, indent=4)
-
-    embedVar = discord.Embed(
-        title=f"Successfully added the channel {channel} to user's custom channel maker", color=0x2ecc71)
+    embedVar = discord.Embed(title=f"Successfully added the channel {channel} to user's custom channel maker", color=0x61aaf1)
     await ctx.send(embed=embedVar)
 
 
