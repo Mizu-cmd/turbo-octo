@@ -1,5 +1,6 @@
 import discord
 from discord import emoji
+from discord.embeds import Embed
 from discord.ext import commands
 import json
 from decouple import config
