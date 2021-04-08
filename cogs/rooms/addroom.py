@@ -42,6 +42,7 @@ class addroom(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(embed=errors.make_error("This command take one positional argument", "-o addroom [room id]"))
             await ctx.message.delete()
+        
 
 def setup(client):
     client.add_cog(addroom(client))

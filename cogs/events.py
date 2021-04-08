@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 import json
+import errors
+import asyncio
 
 private_rooms = {}
 
@@ -8,7 +10,6 @@ class events(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):

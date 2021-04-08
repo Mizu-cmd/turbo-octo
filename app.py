@@ -20,13 +20,25 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     await client.change_presence(activity=discord.Game("Turbo Octo ! Manage Roles"))
 
-cogs = ["help", "addroom", "changeprefix", "events"]
+
+admin = ["araah", "changeprefix", "help"]
+fun = ["image_manipulation"]
+rooms = ["addroom", "nameroom", "privroom"]
+utils = []
+
+cogs = [admin, fun, rooms, utils]
+cogs_names = ["admin", "fun", "rooms", "utils"]
 
 if __name__ == "__main__": 
-    for cog in cogs:
-        client.load_extension("cogs."+cog)
+    for i in range(0, len(cogs_names)):
+        for j in range(0, len(cogs[i])):
+            client.load_extension("cogs."+cogs_names[i]+"."+cogs[i][j])
 
     client.run(token)
+
     client.add_command("help")
     client.add_command("addroom")
     client.add_command("changeprefix")
+    client.add_command("nameroom")
+    client.add_command("privroom")
+    client.add_command("araah")
